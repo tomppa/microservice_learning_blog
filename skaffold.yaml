@@ -1,0 +1,67 @@
+apiVersion: skaffold/v2beta13
+kind: Config
+metadata:
+  name: blog
+build:
+  local:
+    push: false
+  artifacts:
+    - image: outs4m/blog-client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
+    - image: outs4m/blog-comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: outs4m/blog-event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: outs4m/blog-moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: outs4m/blog-posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: outs4m/blog-query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+deploy:
+  kubectl:
+    manifests:
+      - infra/k8s/client-deployment.yaml
+      - infra/k8s/comments-deployment.yaml
+      - infra/k8s/event-bus-deployment.yaml
+      - infra/k8s/ingress-service.yaml
+      - infra/k8s/moderation-deployment.yaml
+      - infra/k8s/posts-deployment.yaml
+      - infra/k8s/posts-service.yaml
+      - infra/k8s/query-deployment.yaml
